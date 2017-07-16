@@ -32,6 +32,11 @@ def parse(s):
     if len(vals) == 0:
         return None
     d['stockid'] = vals[1]
+    if vals[0] == '1':
+	    d['zhangfu'] = vals[29]
+    else:
+        d['zhangfu'] = vals[29]
+
     d['market_start_value'] = vals[3]
     d['lowest_price'] = vals[7]
     d['highest_price'] = vals[11]

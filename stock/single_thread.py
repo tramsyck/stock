@@ -63,11 +63,11 @@ def get_all_info():
                 #把数据写入数据库
                 sql = u"insert into dayinfo(stockid, today_start_price,lowest_price,\
 hight_price,deal_mount,deal_money,exchange,\
-flow_market_value,total_market_value,info_date)\
-values('{}',{},{},{},{},'{}',{},{},{},'{}')".format(\
+flow_market_value,total_market_value,info_date, zhangfu)\
+values('{}',{},{},{},{},'{}',{},{},{},'{}',{})".format(\
 res['stockid'],float(res['market_start_value']),float(res['lowest_price']),res['highest_price'],\
 res['deal_mount'],res['deal_money'],res['change'],res['flow_market_value'],res['total_market_value'],\
-res['date'][:10])
+res['date'][:10], res['zhangfu'])
                 print sql
             cursor.execute(sql.encode('utf8'))
             if count % 10 == 0:
@@ -75,12 +75,11 @@ res['date'][:10])
             time.sleep(0.1)
         except Exception, e:
             print e, stockid, 'error'
-            ferr.write(sql + '\n')
-        finally:
-            conn.commit()
-            ferr.close()
-            cursor.close()
-            conn.close()
+            ferr.write(sql.encode('utf8') + '\n')
+    conn.commit()
+    ferr.close()
+    cursor.close()
+    conn.close()
 
 
 if __name__ == '__main__':
