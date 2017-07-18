@@ -4,6 +4,7 @@
 import sys
 import time
 import logging
+import datetime
 
 import requests
 import pymysql
@@ -59,7 +60,6 @@ def get_all_info():
             res = get_stock_info(stockid)
             if res is not None:
                 count += 1
-                print res
                 #把数据写入数据库
                 sql = u"insert into dayinfo(stockid, today_start_price,lowest_price,\
 hight_price,deal_mount,deal_money,exchange,\
@@ -68,14 +68,13 @@ values('{}',{},{},{},{},'{}',{},{},{},'{}',{})".format(\
 res['stockid'],float(res['market_start_value']),float(res['lowest_price']),res['highest_price'],\
 res['deal_mount'],res['deal_money'],res['change'],res['flow_market_value'],res['total_market_value'],\
 res['date'][:10], res['zhangfu'])
-                print sql
             cursor.execute(sql.encode('utf8'))
             if count % 10 == 0:
                 conn.commit()
             time.sleep(0.1)
         except Exception, e:
-            print e, stockid, 'error'
             ferr.write(sql.encode('utf8') + '\n')
+	    ferr.write(e + '\n')
     conn.commit()
     ferr.close()
     cursor.close()
@@ -83,4 +82,11 @@ res['date'][:10], res['zhangfu'])
 
 
 if __name__ == '__main__':
+	
+   d = datetime.datetime.now()
+   start_time = d.strftime('%Y-%m-%d %H:%M:%S')
    get_all_info()
+   d2 = datetime.datetime.now()
+   end_time = d2.strftime('%Y-%m-%d %H:%M:%S')
+   with open('crawler.log', 'a') as f:
+	   f.write('Start at' + start_time + ' and finished at ' + end_time + '\n')
